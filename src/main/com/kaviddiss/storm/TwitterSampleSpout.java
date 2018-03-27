@@ -68,10 +68,10 @@ public class TwitterSampleSpout extends BaseRichSpout {
         // todo : read these keys from properties file
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
-                .setOAuthConsumerKey("")
-                .setOAuthConsumerSecret("")
-                .setOAuthAccessToken("")
-                .setOAuthAccessTokenSecret("");
+                .setOAuthConsumerKey("Z4fXwtIlLZg68GrHUgRkrgk8p")
+                .setOAuthConsumerSecret("8g5cyEudgR197shO2xRlfCu1lfjTQixZVcZVhArqy2bMNWPWBW")
+                .setOAuthAccessToken("132447463-kW0wdBUW0BlvjOIdEDDE5TA4kUvPrbJdEBWkdCh6")
+                .setOAuthAccessTokenSecret("iGHEEYlkkxlPQoSWWLYB42yqkjoZ0oui7bCdkQy8i398Q");
 
         TwitterStreamFactory factory = new TwitterStreamFactory(cb.build());
         twitterStream = factory.getInstance();
