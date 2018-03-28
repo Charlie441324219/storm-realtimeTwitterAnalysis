@@ -12,7 +12,7 @@ import org.apache.storm.topology.TopologyBuilder;
  */
 public class Topology {
 
-    static final String TOPOLOGY_NAME = "storm-twitter-word-count";
+    static final String TOPOLOGY_NAME = "storm-realtimeTwitterAnalysis";
 
     public static void main(String[] args) {
         Config config = new Config();
@@ -20,7 +20,7 @@ public class Topology {
 
         TopologyBuilder b = new TopologyBuilder();
         b.setSpout("TwitterSampleSpout", new TwitterSampleSpout());
-        b.setBolt("WordSplitterBolt", new WordSplitterBolt(5)).shuffleGrouping("TwitterSampleSpout");
+        b.setBolt("WordSplitterBolt", new WordSplitterBolt(5)).globalGrouping("TwitterSampleSpout");
         b.setBolt("KeyWordsBolt", new KeyWordsBolt()).shuffleGrouping("WordSplitterBolt");
         b.setBolt("WordCounterBolt", new WordCounterBolt(3, 5 * 60, 50)).shuffleGrouping("KeyWordsBolt");
 

@@ -93,9 +93,9 @@ public class WordCounterBolt extends BaseRichBolt {
         }
 
         // Output top list:
-        for (Map.Entry<Long, String> entry : top.entrySet()) {
-            logger.info(new StringBuilder("top - ").append(entry.getValue()).append('|').append(entry.getKey()).toString());
-        }
+//        for (Map.Entry<Long, String> entry : top.entrySet()) {
+//            logger.info(new StringBuilder("top - ").append(entry.getValue()).append('|').append(entry.getKey()).toString());
+//        }
 
         // Clear top list
         long now = System.currentTimeMillis();

@@ -76,7 +76,13 @@ public class TwitterSampleSpout extends BaseRichSpout {
         TwitterStreamFactory factory = new TwitterStreamFactory(cb.build());
         twitterStream = factory.getInstance();
         twitterStream.addListener(listener);
-        twitterStream.sample();
+
+        //set up the filter
+        FilterQuery fq = new FilterQuery();
+        double[][] loc={{-107.31,25.68},{-93.25,36.7}};
+        fq.locations(loc);
+        twitterStream.filter(fq);
+
     }
 
     @Override
