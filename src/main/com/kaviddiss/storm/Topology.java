@@ -20,8 +20,8 @@ public class Topology {
 
         TopologyBuilder b = new TopologyBuilder();
         b.setSpout("TwitterSampleSpout", new TwitterSampleSpout());
-        b.setBolt("WordSplitterBolt", new WordSplitterBolt(5)).globalGrouping("TwitterSampleSpout");
-        b.setBolt("KeyWordsBolt", new KeyWordsBolt()).shuffleGrouping("WordSplitterBolt");
+        b.setBolt("WordFilter", new WordFilter()).globalGrouping("TwitterSampleSpout");
+        b.setBolt("KeyWordsBolt", new KeyWordsBolt()).shuffleGrouping("WordFilter");
         b.setBolt("WordCounterBolt", new WordCounterBolt(3, 5 * 60, 50)).shuffleGrouping("KeyWordsBolt");
 
         final LocalCluster cluster = new LocalCluster();
