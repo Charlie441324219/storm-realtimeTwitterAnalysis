@@ -1,5 +1,6 @@
 package com.kaviddiss.storm;
 
+import com.kaviddiss.storm.tool.SentimentAnalyzer;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -60,6 +61,7 @@ public class WordFilter extends BaseRichBolt {
         Matcher matcher = urlPattern.matcher(textWithoutHashTag);
         //Check if matcher finds url
         String tweetWithoutHashTagAndUrl;
+
         if(matcher.find()) {
             //Matcher found urls
             //Removing them now..
@@ -73,7 +75,8 @@ public class WordFilter extends BaseRichBolt {
         for (String s : keyword){
             if (tweetWithoutHashTagAndUrl.toLowerCase().contains(s.toLowerCase()))
             {
-                logger.info(String.valueOf(new StringBuilder("tweet - ").append(lang).append('|').append(tweetWithoutHashTagAndUrl)));
+                int sentiment = SentimentAnalyzer.findSentiment(tweetWithoutHashTagAndUrl)-2;
+                logger.info(String.valueOf(new StringBuilder("tweet - ").append(lang).append('|').append(tweetWithoutHashTagAndUrl).append('|').append(sentiment)));
                 break;
             }
         }

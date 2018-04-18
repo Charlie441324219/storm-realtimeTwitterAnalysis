@@ -4,6 +4,7 @@
  */
 package com.kaviddiss.storm;
 
+import com.kaviddiss.storm.tool.SentimentAnalyzer;
 import org.apache.storm.Config;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -36,6 +37,7 @@ public class TwitterSampleSpout extends BaseRichSpout {
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         queue = new LinkedBlockingQueue<Status>(1000);
+        SentimentAnalyzer.init();
         this.collector = collector;
 
         StatusListener listener = new StatusListener() {
