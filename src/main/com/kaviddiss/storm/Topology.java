@@ -2,7 +2,12 @@ package com.kaviddiss.storm;
 
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
+import org.apache.storm.mongodb.bolt.MongoInsertBolt;
+import org.apache.storm.mongodb.bolt.MongoUpdateBolt;
+import org.apache.storm.mongodb.common.QueryFilterCreator;
+import org.apache.storm.mongodb.common.mapper.MongoMapper;
 import org.apache.storm.topology.TopologyBuilder;
+import org.apache.storm.tuple.Fields;
 
 /**
  * Topology class that sets up the Storm topology for this sample.
@@ -18,11 +23,15 @@ public class Topology {
         Config config = new Config();
         config.setMessageTimeoutSecs(120);
 
+        MongoMapper mongoMapper = new TweetsMongoMapper().withFields("text", "geolocation", "score");
+        //QueryFilterCreator updateQueryCreator = new TweetsMongoQueryFilterCreator().withField("text");
+        MongoInsertBolt insertBolt = new MongoInsertBolt(
+                "mongodb://localhost:27017/TWITTER_DATA","col", mongoMapper);
+
         TopologyBuilder b = new TopologyBuilder();
         b.setSpout("TwitterSampleSpout", new TwitterSampleSpout());
         b.setBolt("WordFilter", new WordFilter()).globalGrouping("TwitterSampleSpout");
-        b.setBolt("KeyWordsBolt", new KeyWordsBolt()).shuffleGrouping("WordFilter");
-        b.setBolt("WordCounterBolt", new WordCounterBolt(3, 5 * 60, 50)).shuffleGrouping("KeyWordsBolt");
+        b.setBolt("MongoInsertBolt", insertBolt).globalGrouping("WordFilter");
 
         final LocalCluster cluster = new LocalCluster();
         cluster.submitTopology(TOPOLOGY_NAME, config, b.createTopology());

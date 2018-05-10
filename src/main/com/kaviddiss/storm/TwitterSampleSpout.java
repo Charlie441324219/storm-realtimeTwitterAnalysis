@@ -16,8 +16,7 @@ import org.apache.storm.utils.Utils;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,6 +32,9 @@ public class TwitterSampleSpout extends BaseRichSpout {
     private SpoutOutputCollector collector;
     private LinkedBlockingQueue<Status> queue;
     private TwitterStream twitterStream;
+
+
+
 
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
