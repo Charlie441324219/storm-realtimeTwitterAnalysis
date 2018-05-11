@@ -79,7 +79,7 @@ public class WordFilter extends BaseRichBolt {
                 "'type': 'Feature', " +
                 "'geometry': { " +
                 "'type': 'Point', " +
-                "'coordinates': [" + lat_point + "," + lon_point + "] " +
+                "'coordinates': {'latitude': '" + lat_point + "','longitude': '" + lon_point + "'} " +
                 "}, " +
                 "'properties': { " +
                 "'name': '" + placeName + "' " +
