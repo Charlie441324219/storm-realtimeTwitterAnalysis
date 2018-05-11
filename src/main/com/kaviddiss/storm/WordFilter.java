@@ -1,6 +1,8 @@
 package com.kaviddiss.storm;
 
 import com.kaviddiss.storm.tool.SentimentAnalyzer;
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -56,7 +58,35 @@ public class WordFilter extends BaseRichBolt {
         Status tweet = (Status) input.getValueByField("tweet");
         String lang = tweet.getUser().getLang();
         String text = tweet.getText();
-        String boundingBoxCoordinates = Arrays.deepToString(tweet.getPlace().getBoundingBoxCoordinates());
+
+        GeoLocation[][] boundingBoxCoordinates = tweet.getPlace().getBoundingBoxCoordinates();
+        double lat_0 =  boundingBoxCoordinates[0][0].getLatitude();
+        double lon_0 =  boundingBoxCoordinates[0][0].getLongitude();
+        double lat_1 =  boundingBoxCoordinates[0][1].getLatitude();
+        double lon_1 =  boundingBoxCoordinates[0][1].getLongitude();
+        double lat_2 =  boundingBoxCoordinates[0][2].getLatitude();
+        double lon_2 =  boundingBoxCoordinates[0][2].getLongitude();
+        double lat_3 =  boundingBoxCoordinates[0][3].getLatitude();
+        double lon_3 =  boundingBoxCoordinates[0][3].getLongitude();
+        String placeName = tweet.getPlace().getName();
+
+        double lat_point = ( lat_0 + lat_1 + lat_2 + lat_3 ) / 4;
+        double lon_point = ( lon_0 + lon_1 + lon_2 + lon_3 ) / 4;
+
+        GeoLocation pointCoordinates = new GeoLocation(lat_point,lon_point);
+
+        String json = "{ " +
+                "'type': 'Feature', " +
+                "'geometry': { " +
+                "'type': 'Point', " +
+                "'coordinates': [" + lat_point + "," + lon_point + "] " +
+                "}, " +
+                "'properties': { " +
+                "'name': '" + placeName + "' " +
+                "} " +
+                "}";
+
+        DBObject dbObject = (DBObject)JSON.parse(json);
 
         //remove hash tag
         String textWithoutHashTag = text.replace("#", "");
@@ -84,7 +114,7 @@ public class WordFilter extends BaseRichBolt {
                 String emotionless = tweetWithoutHashTagAndUrl.replaceAll(characterFilter,"");
                 int sentiment = SentimentAnalyzer.findSentiment(emotionless)-2;
 //                logger.info(String.valueOf(new StringBuilder("tweet - ").append(lang).append('|').append(emotionless).append('|').append(sentiment)));
-                collector.emit(new Values(emotionless,boundingBoxCoordinates,sentiment));
+                collector.emit(new Values(emotionless,dbObject,sentiment));
 
 //                BufferedWriter output;
 //                try {
